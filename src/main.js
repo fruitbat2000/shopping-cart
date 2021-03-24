@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, markRaw } from 'vue'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 
@@ -19,6 +19,66 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore()
 
-console.log(db)
+db.settings({
+  timestampsInSnapshots: true
+})
+
+db.enablePersistence().catch(function (err) {
+  if (err.code === 'failed-precondition') {
+    console.log(err.code)
+  } else if (err.code === 'unimplemented') {
+    console.log(err.code)
+  }
+})
+
+/* const products = [
+  {
+    sku: 'AWDT0001-S',
+    name: 'Cotton T-Shirt',
+    size: 'small',
+    price: 10.99,
+    stockLevel: 10
+  },
+  {
+    sku: 'AWDT0001-M',
+    name: 'Cotton T-Shirt',
+    size: 'medium',
+    price: 10.99,
+    stockLevel: 50
+  },
+  {
+    sku: 'AWDT0001-L',
+    name: 'Cotton T-Shirt',
+    size: 'large',
+    price: 10.99,
+    stockLevel: 0
+  },
+  {
+    sku: 'AWDT0002',
+    name: 'Baseball cap',
+    price: 5.99,
+    stockLevel: 7
+  },
+  {
+    sku: 'AWDT0003-M',
+    name: 'Shorts',
+    price: 14.99,
+    stockLevel: 100,
+    size: 'medium'
+  }
+]
+
+products.forEach((product, i) => {
+  console.log(product)
+  db.collection('products').doc().set(product)
+    .then(docRef => {
+      console.log('success', docRef.name)
+    })
+    .catch(error => {
+      console.log('something went wrong', error)
+    })
+}) */
+
+store.commit('setDbInstance', markRaw(db))
 
 createApp(App).use(store).use(router).mount('#app')
