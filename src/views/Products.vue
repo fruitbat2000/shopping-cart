@@ -23,7 +23,9 @@ export default {
     const store = useStore()
     const productList = computed(() => store.state.products.productList)
 
-    store.dispatch('products/getProductList')
+    if (!productList.value.length) {
+      store.dispatch('products/getProductList')
+    }
 
     return {
       productList

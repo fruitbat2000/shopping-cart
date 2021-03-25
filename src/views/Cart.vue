@@ -1,6 +1,6 @@
 <template>
   <div class="cart">
-    Cart
+    You have nothing in your cart currently. <router-link to="/">Go to Products</router-link>?
   </div>
 </template>
 
