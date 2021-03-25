@@ -7,7 +7,6 @@ const debug = process.env.NODE_ENV === 'development'
 export default createStore({
   state: {
     db: null,
-    productList: [{ name: 't-shirt', price: 10 }],
     cart: {}
   },
   mutations: {

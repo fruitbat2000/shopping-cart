@@ -14,17 +14,30 @@ const mutations = {
 const getters = {}
 
 const actions = {
-  async getProductList ({ rootState, commit }) {
+  async getProductList ({ rootState, commit, dispatch }) {
     const db = rootState.db
     const tmp = []
 
-    await db.collection('products').get().then((querySnapshot) => {
+    await db.collection('products').get().then(querySnapshot => {
       querySnapshot.forEach((doc) => {
         tmp.push(doc.data())
       })
     })
 
+    dispatch('watchProducts')
     commit('setProductList', tmp)
+  },
+  watchProducts ({ rootState, commit }) {
+    const db = rootState.db
+
+    db.collection('products').onSnapshot(querySnapshot => {
+      const tmp = []
+      querySnapshot.forEach((doc) => {
+        tmp.push(doc.data())
+      })
+
+      commit('setProductList', tmp)
+    })
   }
 }
 
