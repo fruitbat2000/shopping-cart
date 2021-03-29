@@ -18,9 +18,9 @@ export function initFirebase () {
 
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-      console.log('user signed in: ', user)
+      store.dispatch('checkForUser', user)
     } else {
-      console.log('no signed in user')
+      anonymousAuth()
     }
   })
 }
@@ -28,7 +28,7 @@ export function initFirebase () {
 export function anonymousAuth () {
   firebase.auth().signInAnonymously()
     .then(() => {
-      console.log('anaonymous auth successful')
+      console.log('anonymous auth successful')
     })
     .catch((error) => {
       console.log(error)
