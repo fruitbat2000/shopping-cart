@@ -31,6 +31,32 @@ const actions = {
     userDoc.update({
       cart: tmp
     })
+  },
+  updateQuantity ({ rootState, state }, payload) {
+    const user = rootState.user
+    const db = rootState.db
+    const userDoc = db.collection('users').doc(user.uid)
+    const tmp = state.cart.map(prod => Object.assign({}, prod))
+    const item = tmp.find(x => x.sku === payload.item.sku)
+
+    item.quantity = payload.quantity
+
+    userDoc.update({
+      cart: tmp
+    })
+  },
+  removeFromCart ({ rootState, state }, payload) {
+    const user = rootState.user
+    const db = rootState.db
+    const userDoc = db.collection('users').doc(user.uid)
+    const tmp = state.cart.map(prod => Object.assign({}, prod))
+    const item = tmp.find(x => x.sku === payload.sku)
+
+    tmp.splice(tmp.indexOf(item), 1)
+
+    userDoc.update({
+      cart: tmp
+    })
   }
 }
 

@@ -1,12 +1,14 @@
 <template>
   <div class="cart">
-    <p v-if="cart.lenth < 1" class="cart__empty">You have nothing in your cart currently. <router-link to="/">Go to Products</router-link>?</p>
-    <ul class="cart__list">
-      <li v-for="(item, i) in cart" :key="i">
-        <cart-item :item="item"></cart-item>
-      </li>
-    </ul>
-    <button class="cart__checkout">Checkout</button>
+    <p v-if="!cart || cart.length < 1" class="cart__empty">You have nothing in your cart currently. <router-link to="/">Go to Products</router-link>?</p>
+    <div v-else>
+      <ul class="cart__list">
+        <li v-for="(item, i) in cart" :key="i">
+          <cart-item :item="item"></cart-item>
+        </li>
+      </ul>
+      <button class="cart__checkout">Checkout</button>
+    </div>
   </div>
 </template>
 
@@ -23,6 +25,11 @@ export default {
   setup () {
     const store = useStore()
     const cart = computed(() => store.state.cart.cart)
+    const productList = computed(() => store.state.products.productList)
+
+    if (!productList.value.length) {
+      store.dispatch('products/getProductList')
+    }
 
     return {
       cart

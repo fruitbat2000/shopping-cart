@@ -36,7 +36,8 @@ export default createStore({
             } else {
               const user = {
                 anonymous: payload.isAnonymous,
-                uid: uid
+                uid: uid,
+                cart: []
               }
 
               collection.doc(uid).set(user)
