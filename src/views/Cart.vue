@@ -4,17 +4,26 @@
     <div v-else>
       <ul class="cart__list">
         <li v-for="(item, i) in cart" :key="i">
-          <cart-item :item="item"></cart-item>
+          <cart-item :item="item" :ref="el => { if (el) rows[i] = el }"></cart-item>
         </li>
       </ul>
-      <button class="cart__checkout">Checkout</button>
+      <dl>
+        <dt>Subtotal</dt>
+        <dd>{{ currency(subtotal) }}</dd>
+        <dt>VAT at 20%</dt>
+        <dd>{{ currency(vat) }}</dd>
+        <dt>Total cost</dt>
+        <dd>{{ currency(subtotal + vat) }}</dd>
+      </dl>
+      <button @click="checkout" class="cart__checkout" :class="{'cart__checkout--disabled' : !formValid}" :disabled="!formValid">Buy now</button>
     </div>
   </div>
 </template>
 
 <script>
 import { useStore } from 'vuex'
-import { computed } from 'vue'
+import { computed, ref, onBeforeUpdate, watchEffect } from 'vue'
+import { currency } from '@/composables/currency'
 import CartItem from '@/components/CartItem.vue'
 
 export default {
@@ -24,6 +33,8 @@ export default {
   },
   setup () {
     const store = useStore()
+    const rows = ref([])
+    const formValid = ref(true)
     const cart = computed(() => store.state.cart.cart)
     const productList = computed(() => store.state.products.productList)
 
@@ -31,8 +42,48 @@ export default {
       store.dispatch('products/getProductList')
     }
 
+    const subtotal = computed(() => {
+      let total = 0
+      cart.value.forEach(item => {
+        total += item.price * item.quantity
+      })
+      return total
+    })
+
+    const vat = computed(() => {
+      return subtotal.value / 100 * 20
+    })
+
+    watchEffect(() => {
+      let valid = true
+      rows.value.forEach(row => {
+        if (!row.valid) {
+          valid = false
+        }
+      })
+
+      formValid.value = valid
+    }, { flush: 'post' })
+
+    const checkout = () => {
+      store.dispatch('cart/checkout').then(() => {
+        store.dispatch('cart/clearCart')
+        console.log('checkout complete, navigate to thank-you page')
+      })
+    }
+
+    onBeforeUpdate(() => {
+      rows.value = []
+    })
+
     return {
-      cart
+      cart,
+      subtotal,
+      vat,
+      rows,
+      formValid,
+      currency,
+      checkout
     }
   }
 }

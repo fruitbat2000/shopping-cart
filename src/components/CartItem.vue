@@ -3,13 +3,13 @@
     {{ product.name }}
     <dl>
       <dt>Price</dt>
-      <dd>{{ product.price }}</dd>
+      <dd>{{currency(product.price) }}</dd>
       <dt>Quantity</dt>
       <dd>
         <quantity-field ref="quantity" :value="item.quantity" :max-quantity="product.stockLevel" @quantity-field::update="updateQuantity"></quantity-field>
       </dd>
       <dt>Cost</dt>
-      <dd>{{ product.price * item.quantity }}</dd>
+      <dd>{{ currency(product.price * item.quantity) }}</dd>
       <dt>Remove</dt>
       <dd>
         <button class="cart-item__remove" @click="remove">Remove</button>
@@ -20,8 +20,9 @@
 </template>
 
 <script>
-import { computed, ref, watchEffect, onMounted } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
+import { currency } from '@/composables/currency'
 import QuantityField from '@/components/QuantityField.vue'
 
 export default {
@@ -45,7 +46,6 @@ export default {
     })
 
     const remove = () => {
-      console.log('remove item')
       store.dispatch('cart/removeFromCart', props.item)
     }
 
@@ -55,18 +55,17 @@ export default {
       }
     }
 
-    onMounted(() => {
-      watchEffect(() => {
-        valid.value = quantity.value.valid
-      }, { flush: 'post' })
-    })
+    watchEffect(() => {
+      valid.value = quantity.value.valid
+    }, { flush: 'post' })
 
     return {
       product,
       remove,
       updateQuantity,
       quantity,
-      valid
+      valid,
+      currency
     }
   }
 }

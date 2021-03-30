@@ -57,6 +57,36 @@ const actions = {
     userDoc.update({
       cart: tmp
     })
+  },
+  async checkout ({ rootState, state, dispatch }) {
+    const db = rootState.db
+    const batch = db.batch()
+
+    for (const item of state.cart) {
+      await db.collection('products').where('sku', '==', item.sku)
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            const data = doc.data()
+            batch.update(doc.ref, { stockLevel: data.stockLevel - item.quantity })
+          })
+        })
+    }
+
+    return new Promise((resolve, reject) => {
+      batch.commit().then(() => {
+        resolve()
+      }).catch(err => { reject(err) })
+    })
+  },
+  clearCart ({ rootState }) {
+    const user = rootState.user
+    const db = rootState.db
+    const userDoc = db.collection('users').doc(user.uid)
+
+    userDoc.update({
+      cart: []
+    })
   }
 }
 
