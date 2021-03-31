@@ -1,6 +1,8 @@
 <template>
-  <div class="cart">
-    <p v-if="!cart || cart.length < 1" class="cart__empty">You have nothing in your cart currently. <router-link to="/">Go to Products</router-link>?</p>
+  <div class="cart container">
+    <h1 class="h1">Your Basket</h1>
+    <p class="body">Items you have added to your basket are shown below. Adjust the quantities or remove items before continuing purchase.</p>
+    <p v-if="!cart || cart.length < 1" class="cart__empty body">You have nothing in your cart currently. <router-link to="/">Go to Products</router-link>?</p>
     <div v-else>
       <ul class="cart__list">
         <li v-for="(item, i) in cart" :key="i">
@@ -15,7 +17,7 @@
         <dt>Total cost</dt>
         <dd>{{ currency(subtotal + vat) }}</dd>
       </dl>
-      <button @click="checkout" class="cart__checkout" :class="{'cart__checkout--disabled' : !formValid}" :disabled="!formValid">Buy now</button>
+      <button @click="checkout" class="cart__checkout btn btn--primary" :class="{'cart__checkout--disabled' : !formValid}" :disabled="!formValid">Buy now</button>
     </div>
   </div>
 </template>
@@ -88,3 +90,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  @import '@/assets/sass/variables';
+
+  .cart {
+    &__list {
+      list-style: none;
+      margin: 40px 0;
+      padding: 0;
+    }
+  }
+</style>

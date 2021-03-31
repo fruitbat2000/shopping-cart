@@ -7,7 +7,7 @@
       <router-link @click="closeNav" to="/">Products</router-link>
       <router-link @click="closeNav" to="/">News</router-link>
       <router-link @click="closeNav" to="/">Contact</router-link>
-      <router-link @click="closeNav" to="/cart">
+      <router-link @click="closeNav" to="/cart" class="main-nav__cart" :class="{'main-nav__cart--has-items' : cart && cart.length}">
         <cart-icon fill-color="black" />
       </router-link>
     </nav>
@@ -20,7 +20,8 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import Logo from '@/components/svgs/Logo.vue'
 import Burger from '@/components/svgs/Burger.vue'
 import CartIcon from '@/components/svgs/CartIcon.vue'
@@ -33,8 +34,10 @@ export default {
     CartIcon
   },
   setup () {
+    const store = useStore()
     const navOpen = ref(false)
     const bodyEl = document.querySelector('body')
+    const cart = computed(() => store.state.cart.cart)
 
     const openNav = () => {
       navOpen.value = true
@@ -48,7 +51,8 @@ export default {
     return {
       navOpen,
       openNav,
-      closeNav
+      closeNav,
+      cart
     }
   }
 }
@@ -86,11 +90,12 @@ export default {
       right: 8px;
       top: 8px;
       transition: opacity 0.2s ease-in-out;
-      z-index: 2;
+      z-index: 3;
 
       a {
         display: block;
         margin-bottom: 30px;
+        position: relative;
         text-decoration: none;
         text-transform: uppercase;
 
@@ -121,6 +126,24 @@ export default {
       }
     }
 
+    &__cart--has-items:after {
+      background-color: $primary;
+      border-radius: 50%;
+      content: '';
+      display: block;
+      height: 10px;
+      left: 23px;
+      position: absolute;
+      top: -6px;
+      width: 10px;
+
+      @media screen and (min-width: $bp-md) {
+        left: auto;
+        right: 4px;
+        top: 4px;
+      }
+    }
+
     &__overlay {
       background: rgba(0,0,0,0.8);
       height: 100vh;
@@ -131,6 +154,7 @@ export default {
       top: 0;
       transition: opacity 0.2s ease-in-out;
       width: 100vw;
+      z-index: 2;
 
       @media screen and (min-width: $bp-md) {
         display: none;

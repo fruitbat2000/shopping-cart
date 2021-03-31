@@ -1,6 +1,10 @@
 <template>
   <div class="cart-item" :class="{'cart-item--unavailable' : product.stockLevel <= 0}">
-    {{ product.name }}
+    <h2 class="h3 cart-item__name">
+      {{ product.name }}
+      <span v-if="product.size">, {{ product.size }}</span>
+      <span v-else>, one size</span>
+    </h2>
     <dl>
       <dt>Price</dt>
       <dd>{{currency(product.price) }}</dd>
@@ -12,7 +16,9 @@
       <dd>{{ currency(product.price * item.quantity) }}</dd>
       <dt>Remove</dt>
       <dd>
-        <button class="cart-item__remove" @click="remove">Remove</button>
+        <button class="cart-item__remove" @click="remove">
+          <delete-icon :fill-color="`#448AFF`" />
+        </button>
       </dd>
     </dl>
     <p v-if="product.stockLevel <= 0" class="cart-item__stock-warning">Sorry, this item is now out of stock. <a href="#" @click="remove">Remove</a> to continue</p>
@@ -24,6 +30,7 @@ import { computed, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { currency } from '@/composables/currency'
 import QuantityField from '@/components/QuantityField.vue'
+import DeleteIcon from '@/components/svgs/Delete.vue'
 
 export default {
   name: 'CartItem',
@@ -34,7 +41,8 @@ export default {
     }
   },
   components: {
-    QuantityField
+    QuantityField,
+    DeleteIcon
   },
   setup (props) {
     const store = useStore()
@@ -72,4 +80,68 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/sass/variables';
+
+  .cart-item {
+    display: block;
+
+    @media screen and (min-width: $bp-md) {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__name {
+      border-bottom: 2px solid $secondaryLight;
+      margin-bottom: 10px;
+      padding: 10px 0;
+
+      @media screen and (min-width: $bp-md) {
+        border-bottom: none;
+        min-width: 30%;
+      }
+    }
+
+    dl {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      dt {
+        align-items: center;
+        display: flex;
+        font-weight: 500;
+        height: 30px;
+        min-width: 45%;
+
+        @media screen and (min-width: $bp-md) {
+          display: none;
+        }
+      }
+
+      dd {
+        align-items: center;
+        display: flex;
+        font-weight: 200;
+        height: 30px;
+        justify-content: flex-end;
+        margin: 0;
+        min-width: 45%;
+      }
+
+      @media screen and (min-width: $bp-md) {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: 100%;
+        min-width: 65%;
+      }
+    }
+
+    &__remove {
+      background: none;
+      border: none;
+      box-shadow: none;
+      outline: 0;
+    }
+  }
 </style>

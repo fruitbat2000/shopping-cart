@@ -1,8 +1,10 @@
 <template>
   <div class="quantity-field">
-    <button @click="decrement" class="quantity-field__decrement">-</button>
-    <input ref="quantityInput" @blur="checkValid" type="number" pattern="^\d+$" v-model="quant" min="1" :max="maxQuantity" maxlength="3" step="1" required />
-    <button @click="increment" class="quantity-field__increment">+</button>
+    <div class="quantity-field__input-grp">
+      <button @click="decrement" class="quantity-field__btn quantity-field__decrement">-</button>
+      <input ref="quantityInput" @blur="checkValid" type="number" pattern="^\d+$" v-model="quant" min="1" :max="maxQuantity" maxlength="3" step="1" required />
+      <button @click="increment" class="quantity-field__btn quantity-field__increment">+</button>
+    </div>
     <span v-if="errorMsg">{{ errorMsg }}</span>
   </div>
 </template>
@@ -69,11 +71,47 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/sass/variables';
+
   .quantity-field {
+
+    &__input-grp {
+      display: inline-block;
+      position: relative;
+    }
+
     input[type=number] {
+      border: 1px solid $primary;
+      border-radius: 3px;
+      line-height: 2.4rem;
+      padding: 0 20px;
+      text-align: center;
+
       &:invalid {
         border-color: red;
       }
+    }
+
+    &__btn {
+      background: none;
+      border: none;
+      color: $primary;
+      font-size: 1.6rem;
+      font-weight: 200;
+      height: 100%;
+      outline: none;
+      padding: 0 8px;
+      position: absolute;
+      top: 0;
+    }
+
+    &__increment {
+      right: 0;
+    }
+
+    &__decrement {
+      left: 0;
+      top: -1px;
     }
   }
 </style>
