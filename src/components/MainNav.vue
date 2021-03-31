@@ -164,6 +164,8 @@ export default {
 
     @media screen and (min-width: $bp-md) {
       height: 112px;
+      padding-left: 48px;
+      padding-right: 30px;
     }
   }
 </style>
