@@ -1,27 +1,32 @@
 <template>
   <div class="cart-item" :class="{'cart-item--unavailable' : product.stockLevel <= 0}">
-    <h2 class="h3 cart-item__name">
-      {{ product.name }}
-      <span v-if="product.size">, {{ product.size }}</span>
-      <span v-else>, one size</span>
-    </h2>
-    <dl>
-      <dt>Price</dt>
-      <dd>{{currency(product.price) }}</dd>
-      <dt>Quantity</dt>
-      <dd>
-        <quantity-field ref="quantity" :value="item.quantity" :max-quantity="product.stockLevel" @quantity-field::update="updateQuantity"></quantity-field>
-      </dd>
-      <dt>Cost</dt>
-      <dd>{{ currency(product.price * item.quantity) }}</dd>
-      <dt>Remove</dt>
-      <dd>
-        <button class="cart-item__remove" @click="remove">
-          <delete-icon :fill-color="`#448AFF`" />
-        </button>
-      </dd>
-    </dl>
-    <p v-if="product.stockLevel <= 0" class="cart-item__stock-warning">Sorry, this item is now out of stock. <a href="#" @click="remove">Remove</a> to continue</p>
+    <div class="cart-item__row">
+      <h2 class="h3 cart-item__name">
+        {{ product.name }}
+        <span v-if="product.size">, {{ product.size }}</span>
+        <span v-else>, one size</span>
+      </h2>
+      <dl>
+        <dt>Price</dt>
+        <dd>{{currency(product.price) }}</dd>
+        <dt>Quantity</dt>
+        <dd>
+          <quantity-field ref="quantity" :value="item.quantity" :max-quantity="product.stockLevel" @quantity-field::update="updateQuantity" @quantity-field::error="handleError"></quantity-field>
+        </dd>
+        <dt>Cost</dt>
+        <dd>{{ currency(product.price * item.quantity) }}</dd>
+        <dt>Remove</dt>
+        <dd>
+          <button class="cart-item__remove" @click="remove">
+            <delete-icon :fill-color="`#448AFF`" />
+          </button>
+        </dd>
+      </dl>
+    </div>
+    <div class="cart-item__warnings">
+      <p v-if="product.stockLevel <= 0" class="cart-item__stock-warning">Sorry, this item is now out of stock. <a href="#" @click="remove">Remove</a> to continue</p>
+      <p v-if="showError" class="cart-item__error">{{ errorMsg }}</p>
+    </div>
   </div>
 </template>
 
@@ -48,6 +53,8 @@ export default {
     const store = useStore()
     const quantity = ref(null)
     const valid = ref(null)
+    const showError = ref(false)
+    const errorMsg = ref('')
     const productList = computed(() => store.state.products.productList)
     const product = computed(() => {
       return productList.value.find(prod => prod.sku === props.item.sku)
@@ -58,9 +65,15 @@ export default {
     }
 
     const updateQuantity = (int) => {
+      showError.value = false
       if (quantity.value.valid && int !== props.item.quantity) {
         store.dispatch('cart/updateQuantity', { item: props.item, quantity: int })
       }
+    }
+
+    const handleError = (msg) => {
+      errorMsg.value = msg
+      showError.value = true
     }
 
     watchEffect(() => {
@@ -73,7 +86,10 @@ export default {
       updateQuantity,
       quantity,
       valid,
-      currency
+      currency,
+      showError,
+      handleError,
+      errorMsg
     }
   }
 }
@@ -85,9 +101,11 @@ export default {
   .cart-item {
     display: block;
 
-    @media screen and (min-width: $bp-md) {
-      display: flex;
-      justify-content: space-between;
+    &__row {
+      @media screen and (min-width: $bp-md) {
+        display: flex;
+        justify-content: space-between;
+      }
     }
 
     &__name {
@@ -131,8 +149,8 @@ export default {
 
       @media screen and (min-width: $bp-md) {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 100%;
+        gap: 0 20px;
+        grid-template-columns: 1fr 1.5fr 1fr 30px;
         min-width: 65%;
       }
     }
@@ -141,7 +159,17 @@ export default {
       background: none;
       border: none;
       box-shadow: none;
+      cursor: pointer;
       outline: 0;
+    }
+
+    &__warnings {
+      p {
+        color: red;
+        font-size: 1.2rem;
+        margin: 0;
+        text-align: right;
+      }
     }
   }
 </style>

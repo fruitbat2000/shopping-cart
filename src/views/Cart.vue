@@ -4,20 +4,29 @@
     <p class="body">Items you have added to your basket are shown below. Adjust the quantities or remove items before continuing purchase.</p>
     <p v-if="!cart || cart.length < 1" class="cart__empty body">You have nothing in your cart currently. <router-link to="/">Go to Products</router-link>?</p>
     <div v-else>
+      <div class="cart__grid-header">
+        <p>Product</p>
+        <div class="cart__grid-header__grid">
+          <p>Price</p>
+          <p>Quantity</p>
+        </div>
+      </div>
       <ul class="cart__list">
         <li v-for="(item, i) in cart" :key="i">
           <cart-item :item="item" :ref="el => { if (el) rows[i] = el }"></cart-item>
         </li>
       </ul>
-      <dl>
+      <dl class="cart__totals">
         <dt>Subtotal</dt>
         <dd>{{ currency(subtotal) }}</dd>
         <dt>VAT at 20%</dt>
         <dd>{{ currency(vat) }}</dd>
-        <dt>Total cost</dt>
-        <dd>{{ currency(subtotal + vat) }}</dd>
+        <dt class="cart__grand-total">Total cost</dt>
+        <dd class="cart__grand-total">{{ currency(subtotal + vat) }}</dd>
       </dl>
-      <button @click="checkout" class="cart__checkout btn btn--primary" :class="{'cart__checkout--disabled' : !formValid}" :disabled="!formValid">Buy now</button>
+      <div class="cart__checkout">
+        <button @click="checkout" class="btn btn--primary" :class="{'btn--disabled' : !formValid}" :disabled="!formValid">Buy now</button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,7 +56,8 @@ export default {
     const subtotal = computed(() => {
       let total = 0
       cart.value.forEach(item => {
-        total += item.price * item.quantity
+        const product = productList.value.find(prod => prod.sku === item.sku)
+        total += product.price * item.quantity
       })
       return total
     })
@@ -95,10 +105,86 @@ export default {
   @import '@/assets/sass/variables';
 
   .cart {
+    &__grid-header {
+      border-bottom: 2px solid $secondaryLight;
+      display: none;
+      font-weight: 500;
+      justify-content: space-between;
+      margin-top: 40px;
+
+      > p {
+        min-width: 30%;
+      }
+
+      @media screen and (min-width: $bp-md) {
+        display: flex;
+      }
+    }
+
+    &__grid-header__grid {
+      display: grid;
+      gap: 0 20px;
+      grid-template-columns: 1fr 1.5fr 1fr 30px;
+      min-width: 65%;
+
+      p {
+        align-items: center;
+        display: flex;
+        justify-content: flex-end;
+
+        &:last-child {
+          padding-right: 15px;
+        }
+      }
+    }
+
     &__list {
       list-style: none;
       margin: 40px 0;
       padding: 0;
+
+      @media screen and (min-width: $bp-md) {
+        margin-top: 0;
+      }
+    }
+
+    &__totals {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 25px;
+
+      dt {
+        align-items: center;
+        display: flex;
+        margin-bottom: 15px;
+        min-width: 45%;
+      }
+
+      dd {
+        align-items: center;
+        display: flex;
+        justify-content: flex-end;
+        margin: 0 0 15px;
+        min-width: 45%;
+      }
+
+      @media screen and (min-width: $bp-md) {
+        margin-right: 50px;
+      }
+    }
+
+    &__grand-total {
+      font-weight: 500;
+    }
+
+    &__checkout {
+      text-align: right;
+
+      @media screen and (min-width: $bp-md) {
+        padding-right: 50px;
+      }
     }
   }
 </style>

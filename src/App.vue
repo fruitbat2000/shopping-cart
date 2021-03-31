@@ -53,6 +53,7 @@ export default {
     width: 100%;
 
     @media screen and (min-width: $bp-md) {
+      max-width: 1000px;
       min-width: 680px;
       padding: 100px 16px;
       width: calc(100vw - 720px);

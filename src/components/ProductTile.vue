@@ -2,10 +2,14 @@
   <div class="product" :class="{'product--unavailable' : product.stockLevel <= 0}">
     <span v-if="product.stockLevel < 10 && product.stockLevel > 0" class="product__low-stock">Hurry! Only {{ product.stockLevel }} left! &#128293;</span>
     <span v-if="product.stockLevel <= 0" class="product__low-stock">Out of stock</span>
-    <h2 class="h2">{{ product.name }}<span v-if="product.size"> ({{ product.size }})</span></h2>
+    <h2 class="h2">
+      {{ product.name }}
+      <span v-if="product.size">, {{ product.size }}</span>
+      <span v-else>, one size</span>
+    </h2>
     <p class="product__price">{{ currency(product.price) }}</p>
     <button @click="addToCart(product)" class="btn btn--primary" :disabled="product.stockLevel <= 0" :class="{'btn--disabled' : product.stockLevel <= 0}">Add to Cart</button>
-    <span v-if="numberInCart" class="product__in-cart">{{numberInCart}} in cart</span>
+    <span v-if="numberInCart" class="product__in-cart">({{numberInCart}} in cart)</span>
   </div>
 </template>
 
@@ -76,9 +80,11 @@ export default {
     }
 
     &__in-cart {
+      bottom: 8px;
       display: inline-block;
       font-size: 1.2rem;
-      margin-left: 20px;
+      left: 16px;
+      position: absolute;
     }
   }
 </style>

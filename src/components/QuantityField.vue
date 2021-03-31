@@ -5,7 +5,6 @@
       <input ref="quantityInput" @blur="checkValid" type="number" pattern="^\d+$" v-model="quant" min="1" :max="maxQuantity" maxlength="3" step="1" required />
       <button @click="increment" class="quantity-field__btn quantity-field__increment">+</button>
     </div>
-    <span v-if="errorMsg">{{ errorMsg }}</span>
   </div>
 </template>
 
@@ -29,7 +28,6 @@ export default {
     const quantityInput = ref(null)
     const valid = ref(null)
     const quant = ref(props.value)
-    const errorMsg = ref(null)
 
     const increment = () => {
       quantityInput.value.stepUp()
@@ -46,10 +44,9 @@ export default {
     const checkValid = () => {
       valid.value = quantityInput.value.checkValidity()
       if (quantityInput.value.checkValidity()) {
-        errorMsg.value = null
         emit('quantity-field::update', parseInt(quant.value))
       } else {
-        errorMsg.value = quantityInput.value.validationMessage
+        emit('quantity-field::error', quantityInput.value.validationMessage)
       }
     }
 
@@ -63,8 +60,7 @@ export default {
       decrement,
       valid,
       checkValid,
-      quant,
-      errorMsg
+      quant
     }
   }
 }
@@ -78,14 +74,24 @@ export default {
     &__input-grp {
       display: inline-block;
       position: relative;
+      width: 80px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     input[type=number] {
+      -moz-appearance: textfield;
+      background: transparent;
       border: 1px solid $primary;
       border-radius: 3px;
       line-height: 2.4rem;
       padding: 0 20px;
       text-align: center;
+      width: 100%;
 
       &:invalid {
         border-color: red;
@@ -96,6 +102,7 @@ export default {
       background: none;
       border: none;
       color: $primary;
+      cursor: pointer;
       font-size: 1.6rem;
       font-weight: 200;
       height: 100%;
