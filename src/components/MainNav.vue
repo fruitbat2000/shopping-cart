@@ -61,7 +61,6 @@ export default {
     background: $white;
     align-items: center;
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
-    box-sizing: border-box;
     display: flex;
     font-size: 1.2rem;
     height: 56px;

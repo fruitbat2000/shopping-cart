@@ -1,0 +1,22 @@
+@import '@/assets/sass/variables';
+
+.btn {
+  background: none;
+  border: none;
+  border-radius: 3px;
+  box-shadow: none;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.14)) drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.12)) drop-shadow(0px 1px 5px rgba(0, 0, 0, 0.2));
+  outline: 0;
+  padding: 15px 20px;
+
+  &--primary {
+    background-color: $primary;
+    color: $white;
+  }
+
+  &--disabled {
+    background-color: $secondary;
+    color: $white;
+    filter: none;
+  }
+}
