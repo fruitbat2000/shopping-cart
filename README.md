@@ -56,17 +56,17 @@ In many cases the libraries and frameworks used here are overkill for the tasks 
 
 
 ### Tooling/Tech stack
-`vue 3` as a Javascript framework
-`vue-cli` for project bootstrapping
-`vuex` for application state management
-`vue-router` for application routing
-`sass` for CSS preprocessing
-`jest` as a unit testing framework
-`esint` for code linting
-`firebase` for hosting and authentication
-`firestore` for realtime database functionality
-`github actions` for CI & build automation
-`VSCode` as an IDE
+`vue 3` as a Javascript framework\
+`vue-cli` for project bootstrapping\
+`vuex` for application state management\
+`vue-router` for application routing\
+`sass` for CSS preprocessing\
+`jest` as a unit testing framework\
+`esint` for code linting\
+`firebase` for hosting and authentication\
+`firestore` for realtime database functionality\
+`github actions` for CI & build automation\
+`VSCode` as an IDE\
 `Chrome` for testing (with Vue Dev Tools)
 
 ### Notes
