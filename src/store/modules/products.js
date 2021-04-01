@@ -30,14 +30,11 @@ const actions = {
   watchProducts ({ rootState, commit }) {
     const db = rootState.db
 
-    db.collection('products').onSnapshot({ includeMetadataChanges: true }, querySnapshot => {
+    db.collection('products').onSnapshot(querySnapshot => {
       const tmp = []
       querySnapshot.forEach((doc) => {
         tmp.push(doc.data())
       })
-
-      const source = querySnapshot.metadata.fromCache ? 'local cache' : 'server'
-      console.log('Data came from ' + source)
 
       commit('setProductList', tmp)
     })
