@@ -33,6 +33,7 @@
 
 <script>
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { computed, ref, onBeforeUpdate, watchEffect } from 'vue'
 import { currency } from '@/composables/currency'
 import CartItem from '@/components/CartItem.vue'
@@ -44,6 +45,7 @@ export default {
   },
   setup () {
     const store = useStore()
+    const router = useRouter()
     const rows = ref([])
     const formValid = ref(true)
     const cart = computed(() => store.state.cart.cart)
@@ -80,7 +82,10 @@ export default {
     const checkout = () => {
       store.dispatch('cart/checkout').then(() => {
         store.dispatch('cart/clearCart')
-        console.log('checkout complete, navigate to thank-you page')
+
+        router.push({
+          name: 'Success'
+        })
       })
     }
 
