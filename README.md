@@ -28,6 +28,8 @@ npm run lint
 ## Description
 This repo contains a POC for a shopping cart using a Firestore realtime database with a Vue 3 front end.
 
+Demo: [https://shopping-cart-8606f.web.app/](https://shopping-cart-8606f.web.app/)
+
 
 ### Key features:
 
@@ -38,12 +40,12 @@ Product and user data is updated in realtime using the Firestore watch api. This
 Users are authenticated anonymously with Firebase. As a result, user cart data can be stored indefinitely between sessions.
 
 #### - Offline data
-Firestore allows for persistent data even when offline by creating a local db copy using indexeddb. Coupled with service wroker, this means that the site, along with product data, can be accessed whilst offline. As a future enhancement, it would be useful to inform the user when cached data has been updated from the server
+Firestore allows for persistent data even when offline by creating a local db copy using indexeddb. Coupled with service worker, this means that the site, along with product data, can be accessed whilst offline. As a future enhancement, it would be useful to inform the user when cached data has been updated from the server
 
 #### - CI
 Github actions enable automatic deployment to a hosting solution. When a PR is raised, github will automatically deploy a preview build and when a PR is merged to main, a deployment will be made to the live url
 
-#### Composition API
+#### - Composition API
 By using Vue3, the front end code can make use of the Composition API. This allows for more logical reusability of code, whilst retaining the key features of the Vue framework
 
 
